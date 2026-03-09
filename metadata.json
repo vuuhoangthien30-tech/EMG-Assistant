@@ -1,0 +1,5 @@
+{
+  "name": "EMG LMS Assistant",
+  "description": "Trợ lý nhắc nhở học tập cho LMS EMG, quản lý thời khóa biểu và dự án STEM.",
+  "requestFramePermissions": []
+}
