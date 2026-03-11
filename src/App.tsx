@@ -16,7 +16,7 @@ import {
   Bell
 } from 'lucide-react';
 import { format, addWeeks, differenceInDays, isToday, parseISO } from 'date-fns';
-import { vi } from 'date-fns/locale';
+import { enUS } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'motion/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -44,7 +44,7 @@ export default function App() {
     { id: 'w22bs', title: 'Week 22B Science | Electricity 1 - Series and Parallel Circuits (00/05)', course: 'Science & Math', completed: false },
     { id: 'w22bm', title: 'Week 22B Maths - Symmetry (00/04)', course: 'Science & Math', completed: false },
     { id: 'w22s', title: 'Week 22 Science | Light 3 - Colours (00/07)', course: 'Science & Math', completed: false },
-    { id: 'w22m', title: 'Week 22 Maths - Geometry 5 - Area and Perimeter (00/05) ⭐ Đang học', course: 'Science & Math', completed: false },
+    { id: 'w22m', title: 'Week 22 Maths - Geometry 5 - Area and Perimeter (00/05) ⭐ Currently Learning', course: 'Science & Math', completed: false },
     { id: 'w21s', title: 'Week 21 Science | Light 2 - Refraction (01/08)', course: 'Science & Math', completed: false },
     { id: 'w21m', title: 'Week 21 Maths - Geometry 4 - Circles 2 (00/04)', course: 'Science & Math', completed: false },
     { id: 'w20s', title: 'Week 20 Science | Light 1 - Reflection (00/07)', course: 'Science & Math', completed: false },
@@ -93,7 +93,7 @@ export default function App() {
 
   const [chatOpen, setChatOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([
-    { role: 'assistant', content: 'Chào bạn! Mình là trợ lý EMG của bạn. Hôm nay bạn cần giúp gì không?' }
+    { role: 'assistant', content: 'Hello! I am your EMG assistant. How can I help you today?' }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -118,9 +118,9 @@ export default function App() {
     setIsLoading(true);
 
     const context = `
-      Thời khóa biểu: ${WEEKLY_SCHEDULE.map(s => `${s.day}: ${s.subject}`).join(', ')}
-      Dự án STEM Khoa học: Còn ${daysToStem} ngày nữa.
-      Bài tập chưa hoàn thành: ${tasks.filter(t => !t.completed).map(t => t.title).join(', ')}
+      Schedule: ${WEEKLY_SCHEDULE.map(s => `${s.day}: ${s.subject}`).join(', ')}
+      Science STEM Project: ${daysToStem} days left.
+      Incomplete tasks: ${tasks.filter(t => !t.completed).map(t => t.title).join(', ')}
     `;
 
     // Add placeholder for assistant message
@@ -153,13 +153,13 @@ export default function App() {
   const todaySchedule = WEEKLY_SCHEDULE.find(s => {
     const dayOfWeek = new Date().getDay(); // 0 = Sunday, 1 = Monday, ...
     const mapping: Record<number, string> = {
-      1: 'Thứ 2',
-      2: 'Thứ 3',
-      3: 'Thứ 4',
-      4: 'Thứ 5',
-      5: 'Thứ 6',
-      6: 'Thứ 7',
-      0: 'Chủ Nhật'
+      1: 'Mon',
+      2: 'Tue',
+      3: 'Wed',
+      4: 'Thu',
+      5: 'Fri',
+      6: 'Sat',
+      0: 'Sun'
     };
     return s.day === mapping[dayOfWeek];
   });
@@ -183,8 +183,8 @@ export default function App() {
             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
           </button>
           <div className="hidden sm:block text-right">
-            <p className="text-sm font-semibold">{format(new Date(), 'EEEE, d MMMM', { locale: vi })}</p>
-            <p className="text-xs text-[#6B7280]">Học tập hiệu quả!</p>
+            <p className="text-sm font-semibold">{format(new Date(), 'EEEE, d MMMM', { locale: enUS })}</p>
+            <p className="text-xs text-[#6B7280]">Happy studying!</p>
           </div>
         </div>
       </header>
@@ -195,18 +195,18 @@ export default function App() {
           {/* Today's Focus */}
           <section className="bg-white rounded-3xl p-6 shadow-sm border border-[#E5E7EB]">
             <h2 className="text-sm font-bold text-[#6B7280] uppercase tracking-widest mb-4 flex items-center gap-2">
-              <Calendar size={16} /> Hôm nay học gì?
+              <Calendar size={16} /> What to study today?
             </h2>
             <div className="bg-[#F0F7FF] rounded-2xl p-5 border border-[#D1E9FF]">
-              {todaySchedule && todaySchedule.subject !== 'Nghỉ' ? (
+              {todaySchedule && todaySchedule.subject !== 'Off' ? (
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-[#0056B3]">
-                    {todaySchedule.subject === 'Toán' && <Calculator size={24} />}
-                    {todaySchedule.subject === 'Tiếng Anh' && <Languages size={24} />}
-                    {todaySchedule.subject === 'Khoa học' && <Beaker size={24} />}
+                    {todaySchedule.subject === 'Maths' && <Calculator size={24} />}
+                    {todaySchedule.subject === 'English' && <Languages size={24} />}
+                    {todaySchedule.subject === 'Science' && <Beaker size={24} />}
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-[#0056B3] uppercase">Môn học chính</p>
+                    <p className="text-xs font-bold text-[#0056B3] uppercase">Main Subject</p>
                     <p className="text-xl font-bold">{todaySchedule.subject}</p>
                   </div>
                 </div>
@@ -216,8 +216,8 @@ export default function App() {
                     <Clock size={24} />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-[#6B7280] uppercase">Hôm nay</p>
-                    <p className="text-xl font-bold">Thời gian tự học</p>
+                    <p className="text-xs font-bold text-[#6B7280] uppercase">Today</p>
+                    <p className="text-xl font-bold">Self-study time</p>
                   </div>
                 </div>
               )}
@@ -228,14 +228,14 @@ export default function App() {
           <section className="bg-[#151619] text-white rounded-3xl p-6 shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#0056B3] opacity-20 blur-3xl rounded-full -mr-16 -mt-16"></div>
             <h2 className="text-xs font-bold text-[#8E9299] uppercase tracking-widest mb-6 flex items-center gap-2">
-              <Sparkles size={14} className="text-[#0056B3]" /> Dự án STEM Khoa Học
+              <Sparkles size={14} className="text-[#0056B3]" /> Science STEM Project
             </h2>
             <div className="text-center py-4">
               <div className="text-6xl font-bold mb-2 tabular-nums">{daysToStem}</div>
-              <p className="text-sm text-[#8E9299] font-medium">Ngày còn lại cho dự án</p>
+              <p className="text-sm text-[#8E9299] font-medium">Days remaining for project</p>
             </div>
             <div className="mt-6 pt-6 border-t border-white/10 flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#8E9299]">Tiến độ: 7 tuần</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#8E9299]">Progress: 7 weeks</span>
               <div className="flex -space-x-2">
                 {[1, 2, 3].map(i => (
                   <div key={i} className="w-6 h-6 rounded-full border-2 border-[#151619] bg-[#0056B3] flex items-center justify-center text-[10px] font-bold">
@@ -248,23 +248,23 @@ export default function App() {
 
           {/* Weekly Schedule Mini */}
           <section className="bg-white rounded-3xl p-6 shadow-sm border border-[#E5E7EB]">
-            <h3 className="text-sm font-bold text-[#6B7280] uppercase tracking-widest mb-4">Thời khóa biểu tuần</h3>
+            <h3 className="text-sm font-bold text-[#6B7280] uppercase tracking-widest mb-4">Weekly Schedule</h3>
             <div className="space-y-3">
               {WEEKLY_SCHEDULE.map((item, idx) => (
                 <div key={idx} className={cn(
                   "flex items-center justify-between p-3 rounded-xl border transition-all",
-                  item.subject !== 'Nghỉ' ? "bg-white border-[#E5E7EB]" : "bg-[#F9FAFB] border-transparent opacity-60"
+                  item.subject !== 'Off' ? "bg-white border-[#E5E7EB]" : "bg-[#F9FAFB] border-transparent opacity-60"
                 )}>
                   <span className="text-sm font-bold w-12">{item.day}</span>
-                  <span className={cn("text-sm font-medium", item.subject !== 'Nghỉ' ? "text-[#1A1A1A]" : "text-[#6B7280]")}>
+                  <span className={cn("text-sm font-medium", item.subject !== 'Off' ? "text-[#1A1A1A]" : "text-[#6B7280]")}>
                     {item.subject}
                   </span>
                   <div className={cn(
                     "w-2 h-2 rounded-full",
-                    item.subject === 'Toán' && "bg-blue-500",
-                    item.subject === 'Tiếng Anh' && "bg-purple-500",
-                    item.subject === 'Khoa học' && "bg-emerald-500",
-                    item.subject === 'Nghỉ' && "bg-gray-300"
+                    item.subject === 'Maths' && "bg-blue-500",
+                    item.subject === 'English' && "bg-purple-500",
+                    item.subject === 'Science' && "bg-emerald-500",
+                    item.subject === 'Off' && "bg-gray-300"
                   )}></div>
                 </div>
               ))}
@@ -288,8 +288,8 @@ export default function App() {
                 </div>
                 <ExternalLink size={18} className="text-[#9CA3AF] group-hover:text-[#0056B3]" />
               </div>
-              <h3 className="text-lg font-bold mb-1">Mục 1: Khoa học & Toán</h3>
-              <p className="text-sm text-[#6B7280]">Truy cập bài giảng và bài tập LMS</p>
+              <h3 className="text-lg font-bold mb-1">Section 1: Science & Maths</h3>
+              <p className="text-sm text-[#6B7280]">Access LMS lectures and exercises</p>
             </a>
             <a 
               href={COURSE_LINKS.english} 
@@ -303,8 +303,8 @@ export default function App() {
                 </div>
                 <ExternalLink size={18} className="text-[#9CA3AF] group-hover:text-[#9333EA]" />
               </div>
-              <h3 className="text-lg font-bold mb-1">Mục 2: Tiếng Anh</h3>
-              <p className="text-sm text-[#6B7280]">Truy cập tài liệu Tiếng Anh EMG</p>
+              <h3 className="text-lg font-bold mb-1">Section 2: English</h3>
+              <p className="text-sm text-[#6B7280]">Access EMG English materials</p>
             </a>
           </div>
 
@@ -312,12 +312,12 @@ export default function App() {
           <section className="bg-white rounded-3xl shadow-sm border border-[#E5E7EB] overflow-hidden">
             <div className="px-8 py-6 border-b border-[#E5E7EB] flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-bold">Bài tập cần hoàn thành</h2>
-                <p className="text-sm text-[#6B7280]">Bạn còn {incompleteTasks.length} bài tập chưa xong</p>
+                <h2 className="text-xl font-bold">Tasks to complete</h2>
+                <p className="text-sm text-[#6B7280]">You have {incompleteTasks.length} incomplete tasks</p>
               </div>
               <div className="flex items-center gap-2 text-xs font-bold text-[#0056B3] bg-[#F0F7FF] px-3 py-1.5 rounded-full">
                 <AlertCircle size={14} />
-                Cập nhật mỗi ngày
+                Updated daily
               </div>
             </div>
             
@@ -349,7 +349,7 @@ export default function App() {
                         </span>
                         {task.dueDate && (
                           <span className="text-xs text-[#6B7280] flex items-center gap-1">
-                            <Clock size={12} /> Hạn: {format(parseISO(task.dueDate), 'd/M')}
+                            <Clock size={12} /> Due: {format(parseISO(task.dueDate), 'd/M')}
                           </span>
                         )}
                       </div>
@@ -362,15 +362,15 @@ export default function App() {
                   <div className="w-16 h-16 bg-[#F3F4F6] rounded-full flex items-center justify-center mx-auto mb-4 text-[#9CA3AF]">
                     <CheckCircle2 size={32} />
                   </div>
-                  <h3 className="text-lg font-bold">Tuyệt vời!</h3>
-                  <p className="text-[#6B7280]">Bạn đã hoàn thành tất cả bài tập.</p>
+                  <h3 className="text-lg font-bold">Excellent!</h3>
+                  <p className="text-[#6B7280]">You have completed all tasks.</p>
                 </div>
               )}
             </div>
             
             <div className="bg-[#F9FAFB] px-8 py-4 text-center">
               <button className="text-sm font-bold text-[#0056B3] hover:underline flex items-center gap-2 mx-auto">
-                Xem tất cả trên LMS <ExternalLink size={14} />
+                View all on LMS <ExternalLink size={14} />
               </button>
             </div>
           </section>
@@ -394,8 +394,8 @@ export default function App() {
                 transition={{ delay: 1 }}
                 className="bg-white px-4 py-2 rounded-2xl shadow-lg border border-[#E5E7EB] mb-4 mr-2 relative"
               >
-                <p className="text-xs font-bold text-[#0056B3]">Xin chào! 👋</p>
-                <p className="text-[10px] text-[#6B7280] font-medium">Mình là trợ lý EMG đây!</p>
+                <p className="text-xs font-bold text-[#0056B3]">Hello! 👋</p>
+                <p className="text-[10px] text-[#6B7280] font-medium">I'm your EMG assistant!</p>
                 {/* Bubble Tail */}
                 <div className="absolute bottom-0 right-6 transform translate-y-full w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-white"></div>
               </motion.div>
@@ -494,24 +494,24 @@ export default function App() {
                 </div>
                 
                 <button 
-                  onClick={() => setMessages([{ role: 'assistant', content: 'Chào bạn! Mình là trợ lý EMG của bạn. Hôm nay bạn cần giúp gì không?' }])}
+                  onClick={() => setMessages([{ role: 'assistant', content: 'Hello! I am your EMG assistant. How can I help you today?' }])}
                   className="flex items-center gap-3 w-full p-3 rounded-xl border border-[#E5E7EB] bg-white hover:bg-[#F3F4F6] transition-all text-sm font-medium mb-auto"
                 >
                   <MessageSquare size={16} /> New Chat
                 </button>
 
                 <div className="mt-8 space-y-4">
-                  <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-widest">Gợi ý</p>
-                  <button onClick={() => setInput('Tóm tắt bài tập chưa xong')} className="text-xs text-left text-[#6B7280] hover:text-[#0056B3] transition-colors block">Tóm tắt bài tập chưa xong</button>
-                  <button onClick={() => setInput('Lịch học ngày mai')} className="text-xs text-left text-[#6B7280] hover:text-[#0056B3] transition-colors block">Lịch học ngày mai</button>
-                  <button onClick={() => setInput('Dự án STEM là gì?')} className="text-xs text-left text-[#6B7280] hover:text-[#0056B3] transition-colors block">Dự án STEM là gì?</button>
+                  <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-widest">Suggestions</p>
+                  <button onClick={() => setInput('Summarize incomplete tasks')} className="text-xs text-left text-[#6B7280] hover:text-[#0056B3] transition-colors block">Summarize incomplete tasks</button>
+                  <button onClick={() => setInput('Tomorrow\'s schedule')} className="text-xs text-left text-[#6B7280] hover:text-[#0056B3] transition-colors block">Tomorrow's schedule</button>
+                  <button onClick={() => setInput('What is the STEM project?')} className="text-xs text-left text-[#6B7280] hover:text-[#0056B3] transition-colors block">What is the STEM project?</button>
                 </div>
 
                 <div className="mt-auto pt-6 border-t border-[#E5E7EB]">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-[#E0F2FE] rounded-full flex items-center justify-center text-[#0056B3] font-bold text-xs">HV</div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-bold truncate">Học viên EMG</p>
+                      <p className="text-xs font-bold truncate">EMG Student</p>
                       <p className="text-[10px] text-[#9CA3AF] truncate">Grade 7 Student</p>
                     </div>
                   </div>
@@ -529,8 +529,8 @@ export default function App() {
                     <span className="font-bold text-sm">EMG Assistant</span>
                   </div>
                   <div className="hidden sm:block">
-                    <h3 className="font-bold text-lg">Hội thoại hiện tại</h3>
-                    <p className="text-xs text-[#6B7280]">Phản hồi cực nhanh bởi Gemini 3.1</p>
+                    <h3 className="font-bold text-lg">Current Conversation</h3>
+                    <p className="text-xs text-[#6B7280]">Ultra-fast response by Gemini 3.1</p>
                   </div>
                   <button 
                     onClick={() => setChatOpen(false)}
@@ -558,7 +558,7 @@ export default function App() {
                         msg.role === 'user' ? "text-right" : "text-left"
                       )}>
                         <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-widest">
-                          {msg.role === 'user' ? 'Bạn' : 'Trợ lý EMG'}
+                          {msg.role === 'user' ? 'You' : 'EMG Assistant'}
                         </p>
                         <div className={cn(
                           "prose prose-sm sm:prose-base max-w-none leading-relaxed",
@@ -595,7 +595,7 @@ export default function App() {
                             handleSendMessage();
                           }
                         }}
-                        placeholder="Nhắn tin cho trợ lý EMG..."
+                        placeholder="Message EMG assistant..."
                         className="w-full bg-transparent px-6 py-5 pr-16 focus:outline-none resize-none text-base"
                       />
                       <button 
@@ -607,7 +607,7 @@ export default function App() {
                       </button>
                     </div>
                     <p className="text-[10px] text-center text-[#9CA3AF] mt-4 font-medium uppercase tracking-widest">
-                      Gemini 3.1 Flash Lite • Phản hồi cực nhanh
+                      Gemini 3.1 Flash Lite • Ultra-fast response
                     </p>
                   </div>
                 </div>

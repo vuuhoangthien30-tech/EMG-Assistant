@@ -13,13 +13,13 @@ export interface ScheduleItem {
 }
 
 export const WEEKLY_SCHEDULE: ScheduleItem[] = [
-  { day: 'Thứ 2', subject: 'Toán', icon: 'Calculator' },
-  { day: 'Thứ 3', subject: 'Tiếng Anh', icon: 'Languages' },
-  { day: 'Thứ 4', subject: 'Nghỉ', icon: 'Coffee' },
-  { day: 'Thứ 5', subject: 'Khoa học', icon: 'Beaker' },
-  { day: 'Thứ 6', subject: 'Nghỉ', icon: 'Coffee' },
-  { day: 'Thứ 7', subject: 'Nghỉ', icon: 'Coffee' },
-  { day: 'Chủ Nhật', subject: 'Nghỉ', icon: 'Sun' },
+  { day: 'Mon', subject: 'Maths', icon: 'Calculator' },
+  { day: 'Tue', subject: 'English', icon: 'Languages' },
+  { day: 'Wed', subject: 'Off', icon: 'Coffee' },
+  { day: 'Thu', subject: 'Science', icon: 'Beaker' },
+  { day: 'Fri', subject: 'Off', icon: 'Coffee' },
+  { day: 'Sat', subject: 'Off', icon: 'Coffee' },
+  { day: 'Sun', subject: 'Off', icon: 'Coffee' },
 ];
 
 export const COURSE_LINKS = {

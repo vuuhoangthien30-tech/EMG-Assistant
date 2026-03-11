@@ -9,11 +9,11 @@ export async function* getAssistantResponseStream(prompt: string, context: strin
       contents: [
         {
           role: "user",
-          parts: [{ text: `Bạn là một trợ lý học tập thông minh cho học sinh sử dụng hệ thống LMS EMG. 
-          Dưới đây là ngữ cảnh hiện tại của học sinh: ${context}
-          Hãy trả lời một cách thân thiện, khích lệ và ngắn gọn bằng tiếng Việt.
+          parts: [{ text: `You are an intelligent study assistant for students using the EMG LMS system. 
+          Here is the student's current context: ${context}
+          Please respond in a friendly, encouraging, and concise manner in English.
           
-          Câu hỏi/Yêu cầu: ${prompt}` }]
+          Question/Request: ${prompt}` }]
         }
       ],
       config: {
