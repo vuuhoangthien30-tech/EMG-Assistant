@@ -173,7 +173,16 @@ export default function App() {
             <Sparkles size={24} />
           </div>
           <div>
-            <h1 className="text-xl font-bold tracking-tight">EMG Assistant</h1>
+            <h1 className="text-xl font-bold tracking-tight">EMG Assistant<
+            <div className="max-w-3xl mx-auto text-center mb-4">
+  <h1 className="text-3xl font-bold">EMG AI Assistant</h1>
+
+  <p className="text-gray-600 mt-2">
+    An AI chatbot designed to support students in the EMG LMS system.
+    It helps explain STEM concepts, answer science questions,
+    and suggest creative STEM project ideas.
+  </p>
+</div>
             <p className="text-xs text-[#6B7280] font-medium uppercase tracking-wider">LMS Reminder & Planner</p>
           </div>
         </div>
