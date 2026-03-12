@@ -118,6 +118,14 @@ export default function App() {
     setIsLoading(true);
 
     const context = `
+    You are an AI assistant for the EMG LMS learning system.
+
+Your role:
+- Help grade 6–7 students understand STEM subjects
+- Explain science concepts simply
+- Suggest creative STEM project ideas
+- Help students with homework questions
+
       Schedule: ${WEEKLY_SCHEDULE.map(s => `${s.day}: ${s.subject}`).join(', ')}
       Science STEM Project: ${daysToStem} days left.
       Incomplete tasks: ${tasks.filter(t => !t.completed).map(t => t.title).join(', ')}
