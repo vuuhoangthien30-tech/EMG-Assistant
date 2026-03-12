@@ -581,7 +581,36 @@ export default function App() {
                 </div>
 
                 {/* Input Area */}
-                <div className="p-6 sm:p-10 bg-white">
+                <div className="p-6 sm:p-10 bg-white"> 
+                <div className="max-w-3xl mx-auto mb-3 flex flex-wrap gap-2">
+  <button 
+    onClick={()=>setInput("Explain AI simply")}
+    className="px-3 py-1 bg-gray-100 rounded-lg text-sm hover:bg-gray-200"
+  >
+    🤖 Explain AI
+  </button>
+
+  <button 
+    onClick={()=>setInput("Explain a STEM concept")}
+    className="px-3 py-1 bg-gray-100 rounded-lg text-sm hover:bg-gray-200"
+  >
+    📚 STEM concept
+  </button>
+
+  <button 
+    onClick={()=>setInput("Give me a STEM project idea")}
+    className="px-3 py-1 bg-gray-100 rounded-lg text-sm hover:bg-gray-200"
+  >
+    💡 STEM project idea
+  </button>
+
+  <button 
+    onClick={()=>setInput("Help me with science homework")}
+    className="px-3 py-1 bg-gray-100 rounded-lg text-sm hover:bg-gray-200"
+  >
+    🧪 Science homework
+  </button>
+</div></div>
                   <div className="max-w-3xl mx-auto relative group">
                     <div className="absolute inset-0 bg-[#0056B3]/5 blur-xl rounded-3xl opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
                     <div className="relative bg-white border border-[#E5E7EB] rounded-3xl shadow-lg focus-within:border-[#0056B3] focus-within:ring-4 focus-within:ring-[#0056B3]/5 transition-all overflow-hidden">
