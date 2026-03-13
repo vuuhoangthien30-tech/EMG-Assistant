@@ -184,9 +184,7 @@ Your role:
         <h1 className="text-xl font-bold tracking-tight">EMG Assistant>
             <div className="max-w-3xl mx-auto text-center mb-4">
   <h1 className="text-3xl font-bold">EMG AI Assistant</h1>
-            </div>
-    </div>
-    
+            </div>  
   <p className="text-gray-600 mt-2">
     An AI chatbot designed to support students in the EMG LMS system.
     It helps explain STEM concepts, answer science questions,
@@ -194,7 +192,6 @@ Your role:
   </p>
             <p className="text-xs text-[#6B7280] font-medium uppercase tracking-wider">LMS Reminder & Planner</p>
           </div>
-        </div>
         <div className="flex items-center gap-4">
           <button className="p-2 text-[#6B7280] hover:bg-[#F3F4F6] rounded-full transition-colors relative">
             <Bell size={20} />
