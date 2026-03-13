@@ -657,9 +657,10 @@ className="px-3 py-1 bg-gray-100 rounded-lg text-sm hover:bg-gray-200"
                     </div>
                     <p className="text-[10px] text-center text-[#9CA3AF] mt-4 font-medium uppercase tracking-widest">
                       Gemini 3.1 Flash Lite • Ultra-fast response
-                    </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+                   </p>
+        </div>
+      </motion.div>
+    )}
+  </AnimatePresence>
   );
 }
