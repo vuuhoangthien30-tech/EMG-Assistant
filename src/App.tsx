@@ -192,7 +192,6 @@ Your role:
     It helps explain STEM concepts, answer science questions,
     and suggest creative STEM project ideas.
   </p>
-</div>
             <p className="text-xs text-[#6B7280] font-medium uppercase tracking-wider">LMS Reminder & Planner</p>
           </div>
         </div>
@@ -205,9 +204,6 @@ Your role:
             <p className="text-sm font-semibold">{format(new Date(), 'EEEE, d MMMM', { locale: enUS })}</p>
             <p className="text-xs text-[#6B7280]">Happy studying!</p>
           </div>
-        </div>
-      </header>
-
       <main className="max-w-6xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column: Schedule & STEM */}
         <div className="lg:col-span-4 space-y-8">
