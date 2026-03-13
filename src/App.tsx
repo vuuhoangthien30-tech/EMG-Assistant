@@ -14,7 +14,8 @@ import {
   ChevronRight,
   AlertCircle,
   Bell,
-  X
+  X,
+  Check
 } from 'lucide-react';
 import { format, addWeeks, differenceInDays, isToday, parseISO } from 'date-fns';
 import { enUS } from 'date-fns/locale';
@@ -99,6 +100,15 @@ export default function App() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [tasksExpanded, setTasksExpanded] = useState(false);
+  const [claps, setClaps] = useState<{ 
+    id: number; 
+    x: number; 
+    sway: number; 
+    duration: number; 
+    delay: number; 
+    scale: number;
+    rotation: number;
+  }[]>([]);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   // STEM Project target (7 weeks from last Thursday, March 5, 2026)
@@ -148,7 +158,37 @@ export default function App() {
   };
 
   const toggleTask = (id: string) => {
-    setTasks(prev => prev.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
+    setTasks(prev => {
+      const newTasks = prev.map(t => {
+        if (t.id === id) {
+          const newCompleted = !t.completed;
+          if (newCompleted) {
+            // Play clapping sound
+            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3');
+            audio.volume = 0.5;
+            audio.play().catch(err => console.log("Audio play failed:", err));
+
+            // Trigger claps
+            const newClaps = Array.from({ length: 35 }).map((_, i) => ({
+              id: Math.random(),
+              x: Math.random() * 100,
+              sway: (Math.random() - 0.5) * 20, // Random horizontal sway
+              duration: 1.5 + Math.random() * 1.5, // Random speed
+              delay: Math.random() * 0.5, // Staggered start
+              scale: 0.5 + Math.random() * 1, // Random sizes
+              rotation: (Math.random() - 0.5) * 60, // Random initial rotation
+            }));
+            setClaps(prevClaps => [...prevClaps, ...newClaps]);
+            setTimeout(() => {
+              setClaps(prevClaps => prevClaps.filter(c => !newClaps.includes(c)));
+            }, 4000); // Increased timeout to match longer durations
+          }
+          return { ...t, completed: newCompleted };
+        }
+        return t;
+      });
+      return newTasks;
+    });
   };
 
   const incompleteTasks = tasks.filter(t => !t.completed);
@@ -365,7 +405,20 @@ export default function App() {
                       {task.completed ? <CheckCircle2 size={18} /> : <Circle size={18} />}
                     </button>
                     <div className="flex-1">
-                      <h4 className={cn("font-bold text-lg transition-all", task.completed ? "line-through text-white/40" : "text-white group-hover:text-[#00A3FF]")}>{task.title}</h4>
+                      <div className="flex items-center gap-3">
+                        <h4 className={cn("font-bold text-lg transition-all", task.completed ? "text-white/40" : "text-white group-hover:text-[#00A3FF]")}>
+                          {task.title}
+                        </h4>
+                        {task.completed && (
+                          <motion.div
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            className="text-[#00A3FF]"
+                          >
+                            <Check size={20} className="stroke-[3px]" />
+                          </motion.div>
+                        )}
+                      </div>
                       <div className="flex items-center gap-4 mt-2">
                         <span className={cn(
                           "text-[9px] font-bold uppercase tracking-[0.15em] px-2.5 py-1 rounded-md border",
@@ -402,6 +455,39 @@ export default function App() {
           </section>
         </div>
       </main>
+
+      {/* Clapping Animation Overlay */}
+      <div className="fixed inset-0 pointer-events-none z-[100] overflow-hidden">
+        <AnimatePresence>
+          {claps.map((clap) => (
+            <motion.div
+              key={clap.id}
+              initial={{ 
+                y: "110vh", 
+                opacity: 0, 
+                x: `${clap.x}vw`, 
+                scale: clap.scale,
+                rotate: clap.rotation 
+              }}
+              animate={{ 
+                y: "-20vh", 
+                opacity: [0, 1, 1, 0],
+                x: [`${clap.x}vw`, `${clap.x + clap.sway}vw`, `${clap.x - clap.sway}vw`, `${clap.x}vw`],
+                rotate: [clap.rotation, clap.rotation + 45, clap.rotation - 45, clap.rotation]
+              }}
+              exit={{ opacity: 0 }}
+              transition={{ 
+                duration: clap.duration, 
+                delay: clap.delay,
+                ease: "linear" 
+              }}
+              className="absolute text-4xl sm:text-6xl"
+            >
+              👏
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
 
       {/* Slogan */}
       <div className="max-w-6xl mx-auto px-6 mb-12">

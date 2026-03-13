@@ -2,11 +2,12 @@ import { GoogleGenAI } from "@google/genai";
 
 export async function* getAssistantResponseStream(prompt: string, context: string) {
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
+    // Try multiple ways to get the API key
+    const apiKey = process.env.GEMINI_API_KEY || (import.meta as any).env?.VITE_GEMINI_API_KEY;
     
-    if (!apiKey) {
-      console.error("GEMINI_API_KEY is not defined in the environment.");
-      yield "Chào bạn! Hiện tại mình chưa được kết nối với bộ não AI (thiếu API Key). Nếu bạn là người quản trị, hãy kiểm tra lại cấu hình nhé!";
+    if (!apiKey || apiKey === "undefined" || apiKey === "null" || apiKey === "") {
+      console.error("GEMINI_API_KEY is missing or invalid.");
+      yield "Chào bạn! Hiện tại mình chưa nhận được mã khóa (API Key) để kết nối với bộ não AI. Bạn hãy kiểm tra lại phần cài đặt (Settings) của ứng dụng nhé!";
       return;
     }
 
