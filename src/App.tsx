@@ -181,7 +181,7 @@ Your role:
             <Sparkles size={24} />
           </div>
         </div>
-        </h1 className="text-xl font-bold tracking-tight">EMG Assistant>
+        <h1 className="text-xl font-bold tracking-tight">EMG Assistant>
             <div className="max-w-3xl mx-auto text-center mb-4">
   <h1 className="text-3xl font-bold">EMG AI Assistant</h1>
             </div>
