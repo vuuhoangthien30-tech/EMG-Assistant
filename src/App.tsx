@@ -664,5 +664,5 @@ className="px-3 py-1 bg-gray-100 rounded-lg text-sm hover:bg-gray-200"
         )}
       </AnimatePresence>
   
-  );
+);
 }
