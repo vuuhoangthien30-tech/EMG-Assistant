@@ -126,10 +126,10 @@ Your role:
 - Suggest creative STEM project ideas
 - Help students with homework questions
 
-const context = `You are a helpful EMG assistant. 
-Schedule: ${WEEKLY_SCHEDULE.map(s => `${s.day}: ${s.subject}`).join(', ')}
-Science STEM Project: ${daysToStem} days left.
-Incomplete tasks: ${tasks.filter(t => !t.completed).map(t => t.title).join(', ')}`;
+const context = `You are a helpful EMG assistant.
+    Schedule: ${WEEKLY_SCHEDULE.map(s => `${s.day}: ${s.subject}`).join(', ')}
+    Science STEM Project: ${daysToStem} days left.
+    Incomplete tasks: ${tasks.filter(t => !t.completed).map(t => t.title).join(', ')}`;
 
     // Add placeholder for assistant message
     setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
@@ -185,7 +185,7 @@ Incomplete tasks: ${tasks.filter(t => !t.completed).map(t => t.title).join(', ')
     <div>
       <h1 className="text-xl font-bold tracking-tight">EMG Assistant</h1>
       <p className="text-xs text-[#6B7280] font-medium uppercase tracking-wider">
-        LMS Reminder & Planner
+       <p LMS Reminder & Planner>
       </p>
     </div>
 
