@@ -180,11 +180,13 @@ Your role:
           <div className="w-10 h-10 bg-[#0056B3] rounded-xl flex items-center justify-center text-white">
             <Sparkles size={24} />
           </div>
-          <div>
-            <h1 className="text-xl font-bold tracking-tight">EMG Assistant<
+        </div>
+        </h1 className="text-xl font-bold tracking-tight">EMG Assistant>
             <div className="max-w-3xl mx-auto text-center mb-4">
   <h1 className="text-3xl font-bold">EMG AI Assistant</h1>
-
+            </div>
+    </div>
+    
   <p className="text-gray-600 mt-2">
     An AI chatbot designed to support students in the EMG LMS system.
     It helps explain STEM concepts, answer science questions,
