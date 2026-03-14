@@ -15,7 +15,6 @@ import {
   AlertCircle,
   Bell,
   X,
-  Calculator,
   Check
 } from 'lucide-react';
 import { format, addWeeks, differenceInDays, isToday, parseISO } from 'date-fns';
@@ -101,7 +100,6 @@ export default function App() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [tasksExpanded, setTasksExpanded] = useState(false);
-  const [isMathMode, setIsMathMode] = useState(false);
   const [claps, setClaps] = useState<{ 
     id: number; 
     x: number; 
@@ -126,11 +124,9 @@ export default function App() {
   const handleSendMessage = async () => {
     if (!input.trim() || isLoading) return;
 
-    const userMsg = isMathMode 
-      ? `[MATH_TUTOR_MODE] Hãy giải thích từng bước bài toán này: ${input}` 
-      : input;
+    const userMsg = input;
     setInput('');
-    setMessages(prev => [...prev, { role: 'user', content: input }]);
+    setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
     setIsLoading(true);
 
     const context = `
@@ -635,7 +631,7 @@ export default function App() {
                   <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Suggestions</p>
                   <button onClick={() => setInput('🤖 Explain AI')} className="text-xs text-left text-slate-600 hover:text-[#0056B3] transition-colors block font-medium">🤖 Explain AI</button>
                   <button onClick={() => setInput('💡 STEM project idea')} className="text-xs text-left text-slate-600 hover:text-[#0056B3] transition-colors block font-medium">💡 STEM project idea</button>
-                  <button onClick={() => setInput('🏫 Ask like a teacher')} className="text-xs text-left text-slate-600 hover:text-[#0056B3] transition-colors block font-medium">🧑🏫 Ask like a teacher</button>
+                  <button onClick={() => setInput('🧑🏫 Ask like a teacher')} className="text-xs text-left text-slate-600 hover:text-[#0056B3] transition-colors block font-medium">🧑🏫 Ask like a teacher</button>
                   
                   <div className="pt-4">
                     <div className="bg-slate-100 rounded-2xl p-4 border border-slate-200 flex items-center justify-center">
@@ -721,44 +717,9 @@ export default function App() {
                   ))}
                   <div ref={chatEndRef} />
                 </div>
-{/* Nút chuyển đổi chế độ Gia sư Toán */}
-<div className="flex px-2 mb-3 gap-2">
-  <button 
-    onClick={() => setIsMathMode(!isMathMode)}
-    className={cn(
-      "text-[10px] font-bold px-4 py-1.5 rounded-full border transition-all duration-300 flex items-center gap-2",
-      isMathMode 
-        ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.2)]" 
-        : "bg-white/5 text-white/40 border-white/10 hover:bg-white/10"
-    )}
-  >
-    <Calculator size={12} className={isMathMode ? "animate-pulse" : ""} />
-    {isMathMode ? "MODE: MATH TUTOR IS ON" : "MODE: STANDARD SUPPORT"}
-  </button>
-  
-  {isMathMode && (
-    <span className="text-[9px] text-emerald-500/60 italic flex items-center animate-bounce">
-      ✨ I'm currently teaching math to 7th graders...
-    </span>
-  )}
-</div>
+
                 {/* Input Area */}
                 <div className="p-6 sm:p-10 bg-white">
-                  {/* Nút bật/tắt chế độ Toán nằm ngay trên ô nhập liệu */}
-<div className="flex mb-3 justify-start">
-  <button 
-    type="button"
-    onClick={() => setIsMathMode(!isMathMode)}
-    className={`text-[10px] font-bold px-4 py-1.5 rounded-full border transition-all flex items-center gap-2 ${
-      isMathMode 
-        ? "bg-[#0056B3] text-white border-[#0056B3] shadow-md" 
-        : "bg-gray-100 text-gray-500 border-gray-200 hover:bg-gray-200"
-    }`}
-  >
-    <Calculator size={12} className={isMathMode ? "animate-pulse" : ""} />
-    {isMathMode ? "MATH MODE: ACTIVE" : "NORMAL MODE"}
-  </button>
-</div>
                   <div className="max-w-3xl mx-auto relative group">
                     <div className="absolute inset-0 bg-[#0056B3]/5 blur-xl rounded-3xl opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
                     <div className="relative bg-white border border-[#E5E7EB] rounded-3xl shadow-lg focus-within:border-[#0056B3] focus-within:ring-4 focus-within:ring-[#0056B3]/5 transition-all overflow-hidden">
