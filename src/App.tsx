@@ -744,6 +744,21 @@ export default function App() {
 </div>
                 {/* Input Area */}
                 <div className="p-6 sm:p-10 bg-white">
+                  {/* Nút bật/tắt chế độ Toán nằm ngay trên ô nhập liệu */}
+<div className="flex mb-3 justify-start">
+  <button 
+    type="button"
+    onClick={() => setIsMathMode(!isMathMode)}
+    className={`text-[10px] font-bold px-4 py-1.5 rounded-full border transition-all flex items-center gap-2 ${
+      isMathMode 
+        ? "bg-[#0056B3] text-white border-[#0056B3] shadow-md" 
+        : "bg-gray-100 text-gray-500 border-gray-200 hover:bg-gray-200"
+    }`}
+  >
+    <Calculator size={12} className={isMathMode ? "animate-pulse" : ""} />
+    {isMathMode ? "MATH MODE: ACTIVE" : "NORMAL MODE"}
+  </button>
+</div>
                   <div className="max-w-3xl mx-auto relative group">
                     <div className="absolute inset-0 bg-[#0056B3]/5 blur-xl rounded-3xl opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
                     <div className="relative bg-white border border-[#E5E7EB] rounded-3xl shadow-lg focus-within:border-[#0056B3] focus-within:ring-4 focus-within:ring-[#0056B3]/5 transition-all overflow-hidden">
