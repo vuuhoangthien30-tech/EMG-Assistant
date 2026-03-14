@@ -129,7 +129,7 @@ export default function App() {
       ? `[MATH_TUTOR_MODE] Hãy giải thích từng bước bài toán này: ${input}` 
       : input;
     setInput('');
-    setMessages(prev => [...prev, { role: 'user', content:  }]);
+    setMessages(prev => [...prev, { role: 'user', content: input }]);
     setIsLoading(true);
 
     const context = `
