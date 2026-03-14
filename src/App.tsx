@@ -634,7 +634,7 @@ export default function App() {
                   <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Suggestions</p>
                   <button onClick={() => setInput('🤖 Explain AI')} className="text-xs text-left text-slate-600 hover:text-[#0056B3] transition-colors block font-medium">🤖 Explain AI</button>
                   <button onClick={() => setInput('💡 STEM project idea')} className="text-xs text-left text-slate-600 hover:text-[#0056B3] transition-colors block font-medium">💡 STEM project idea</button>
-                  <button onClick={() => setInput('🧑🏫 Ask like a teacher')} className="text-xs text-left text-slate-600 hover:text-[#0056B3] transition-colors block font-medium">🧑🏫 Ask like a teacher</button>
+                  <button onClick={() => setInput('🏫 Ask like a teacher')} className="text-xs text-left text-slate-600 hover:text-[#0056B3] transition-colors block font-medium">🧑🏫 Ask like a teacher</button>
                   
                   <div className="pt-4">
                     <div className="bg-slate-100 rounded-2xl p-4 border border-slate-200 flex items-center justify-center">
