@@ -15,6 +15,7 @@ import {
   AlertCircle,
   Bell,
   X,
+  Calculator,
   Check
 } from 'lucide-react';
 import { format, addWeeks, differenceInDays, isToday, parseISO } from 'date-fns';
