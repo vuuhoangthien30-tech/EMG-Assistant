@@ -100,6 +100,7 @@ export default function App() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [tasksExpanded, setTasksExpanded] = useState(false);
+  const [isMathMode, setIsMathMode] = useState(false);
   const [claps, setClaps] = useState<{ 
     id: number; 
     x: number; 
@@ -124,9 +125,11 @@ export default function App() {
   const handleSendMessage = async () => {
     if (!input.trim() || isLoading) return;
 
-    const userMsg = input;
+    const userMsg = isMathMode 
+      ? `[MATH_TUTOR_MODE] Hãy giải thích từng bước bài toán này: ${input}` 
+      : input;
     setInput('');
-    setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+    setMessages(prev => [...prev, { role: 'user', content:  }]);
     setIsLoading(true);
 
     const context = `
@@ -717,7 +720,27 @@ export default function App() {
                   ))}
                   <div ref={chatEndRef} />
                 </div>
-
+{/* Nút chuyển đổi chế độ Gia sư Toán */}
+<div className="flex px-2 mb-3 gap-2">
+  <button 
+    onClick={() => setIsMathMode(!isMathMode)}
+    className={cn(
+      "text-[10px] font-bold px-4 py-1.5 rounded-full border transition-all duration-300 flex items-center gap-2",
+      isMathMode 
+        ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.2)]" 
+        : "bg-white/5 text-white/40 border-white/10 hover:bg-white/10"
+    )}
+  >
+    <Calculator size={12} className={isMathMode ? "animate-pulse" : ""} />
+    {isMathMode ? "CHẾ ĐỘ: GIA SƯ TOÁN ĐANG BẬT" : "CHẾ ĐỘ: TRỢ LÝ THƯỜNG"}
+  </button>
+  
+  {isMathMode && (
+    <span className="text-[9px] text-emerald-500/60 italic flex items-center animate-bounce">
+      ✨ Đang dạy toán lớp 7...
+    </span>
+  )}
+</div>
                 {/* Input Area */}
                 <div className="p-6 sm:p-10 bg-white">
                   <div className="max-w-3xl mx-auto relative group">
