@@ -733,12 +733,12 @@ export default function App() {
     )}
   >
     <Calculator size={12} className={isMathMode ? "animate-pulse" : ""} />
-    {isMathMode ? "CHẾ ĐỘ: GIA SƯ TOÁN ĐANG BẬT" : "CHẾ ĐỘ: TRỢ LÝ THƯỜNG"}
+    {isMathMode ? "MODE: MATH TUTOR IS ON" : "MODE: STANDARD SUPPORT"}
   </button>
   
   {isMathMode && (
     <span className="text-[9px] text-emerald-500/60 italic flex items-center animate-bounce">
-      ✨ Đang dạy toán lớp 7...
+      ✨ I'm currently teaching math to 7th graders...
     </span>
   )}
 </div>
