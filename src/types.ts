@@ -2,8 +2,17 @@ export interface Task {
   id: string;
   title: string;
   course: 'Science & Math' | 'English';
+  category: 'Math' | 'Science' | 'English';
   dueDate?: string;
   completed: boolean;
+  content?: {
+    summary: string;
+    quiz: {
+      question: string;
+      options: string[];
+      answer: number;
+    }[];
+  };
 }
 
 export interface ScheduleItem {

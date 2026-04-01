@@ -6,6 +6,7 @@ import {
   Clock, 
   ExternalLink, 
   MessageSquare, 
+  Mic,
   Send, 
   Sparkles, 
   Calculator, 
@@ -15,7 +16,12 @@ import {
   AlertCircle,
   Bell,
   X,
-  Check
+  Check,
+  Loader2,
+  Volume2,
+  BookOpen,
+  HelpCircle,
+  Bot
 } from 'lucide-react';
 import { format, addWeeks, differenceInDays, isToday, parseISO } from 'date-fns';
 import { enUS } from 'date-fns/locale';
@@ -26,6 +32,10 @@ import Markdown from 'react-markdown';
 
 import { Task, WEEKLY_SCHEDULE, COURSE_LINKS } from './types';
 import { getAssistantResponseStream } from './services/gemini';
+import { VoiceAssistant } from './components/VoiceAssistant';
+import { Quiz } from './components/Quiz';
+import { generateSpeechStream } from './services/tts';
+import { GoogleGenAI } from "@google/genai";
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -33,73 +43,84 @@ function cn(...inputs: ClassValue[]) {
 
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>([
-    { id: 'w28s', title: 'Week 28 Science | Ecology 1 - Interaction', course: 'Science & Math', completed: false },
-    { id: 'w28m', title: 'Week 28 Maths - Transformations 1', course: 'Science & Math', completed: false },
-    { id: 'w27s', title: 'Week 27 Science | Magnetism', course: 'Science & Math', completed: false },
-    { id: 'w27m', title: 'Week 27 Maths - Probability 2', course: 'Science & Math', completed: false },
-    { id: 'w26s', title: 'Week 26 Science | Electricity 2 - Voltage', course: 'Science & Math', completed: false },
-    { id: 'w25m', title: 'Week 25 Maths - Probability 1 (01/04)', course: 'Science & Math', completed: false },
-    { id: 'w24s', title: 'Week 24 Science | Regular Assessment (Term 2) (00/06)', course: 'Science & Math', completed: false },
-    { id: 'w24m', title: 'Week 24 Maths - Regular Assessment 2 Exam (00/03)', course: 'Science & Math', completed: false },
-    { id: 'w23s', title: 'Week 23 Science | Regular Assessment (Term 2) Review (00/03)', course: 'Science & Math', completed: false },
-    { id: 'w23m', title: 'Week 23 Maths - Review Week (00/03)', course: 'Science & Math', completed: false },
-    { id: 'w22bs', title: 'Week 22B Science | Electricity 1 - Series and Parallel Circuits (00/05)', course: 'Science & Math', completed: false },
-    { id: 'w22bm', title: 'Week 22B Maths - Symmetry (00/04)', course: 'Science & Math', completed: false },
-    { id: 'w22s', title: 'Week 22 Science | Light 3 - Colours (00/07)', course: 'Science & Math', completed: false },
-    { id: 'w22m', title: 'Week 22 Maths - Geometry 5 - Area and Perimeter (00/05) ⭐ Currently Learning', course: 'Science & Math', completed: false },
-    { id: 'w21s', title: 'Week 21 Science | Light 2 - Refraction (01/08)', course: 'Science & Math', completed: true },
-    { id: 'w21m', title: 'Week 21 Maths - Geometry 4 - Circles 2 (00/04)', course: 'Science & Math', completed: true },
-    { id: 'w20s', title: 'Week 20 Science | Light 1 - Reflection (00/07)', course: 'Science & Math', completed: true },
-    { id: 'w20m', title: 'Week 20 Maths - Geometry 3 - Circles 1 (00/04)', course: 'Science & Math', completed: true },
-    { id: 'w19s', title: 'Week 19 Science | Sound 2 (05/08)', course: 'Science & Math', completed: true },
-    { id: 'w19m', title: 'Week 19 Maths - Geometry 2 - 3D Shapes and Nets (00/03)', course: 'Science & Math', completed: true },
-    { id: 'w18s', title: 'Week 18 Science | Sound 1 (00/06)', course: 'Science & Math', completed: true },
-    { id: 'w18m', title: 'Week 18 Maths - Gemoetry 1 - Angles (00/03)', course: 'Science & Math', completed: true },
-    { id: 'w17s', title: 'Week 17 Science | Forces 2 - Newton\'s Laws of Motion (00/06)', course: 'Science & Math', completed: true },
-    { id: 'w17m', title: 'Week 17 Maths (00/05)', course: 'Science & Math', completed: true },
-    { id: 'w16s', title: 'Week 16 Science | Forces 1 - Speed and Resistance (00/08)', course: 'Science & Math', completed: true },
-    { id: 'w16m', title: 'Week 16 Maths (00/04)', course: 'Science & Math', completed: true },
-    { id: 'w15s', title: 'Week 15 Science | Introduction to Reproduction (00/06)', course: 'Science & Math', completed: true },
-    { id: 'w15m', title: 'Week 15 Maths | Algebraic Expressions 2 (00/03)', course: 'Science & Math', completed: true },
-    { id: 'w14s', title: 'Week 14 Science | End Term 1 (00/02)', course: 'Science & Math', completed: true },
-    { id: 'w14m', title: 'Week 14 Maths | End Term 1 (02/03)', course: 'Science & Math', completed: true },
-    { id: 'w13s', title: 'Week 13 Science | End Term 1 Review (03/03)', course: 'Science & Math', completed: true },
-    { id: 'w13m', title: 'Week 13 Maths | End Term 1 Review (02/03)', course: 'Science & Math', completed: true },
-    { id: 'w12s', title: 'Week 12 Science | STEM Group Project (00/04)', course: 'Science & Math', completed: true },
-    { id: 'w12m', title: 'Week 12 Maths | Algebraic Expressions 1 (01/04)', course: 'Science & Math', completed: true },
-    { id: 'w11s', title: 'Week 11 Science | Neutralization (00/06)', course: 'Science & Math', completed: true },
-    { id: 'w11m', title: 'Week 11 Maths | Algebraic Sequences (00/04)', course: 'Science & Math', completed: true },
-    { id: 'w10s', title: 'Week 10 Science | Acids and Alkalis (00/07)', course: 'Science & Math', completed: true },
-    { id: 'w10m', title: 'Week 10 Maths | Powers and Roots (00/05)', course: 'Science & Math', completed: true },
-    { id: 'w9s', title: 'Week 9 Science | Plants 2 - Transpiration and Transport of Nutrients (00/04)', course: 'Science & Math', completed: true },
-    { id: 'w9m', title: 'Week 9 Maths | Units and Conversions (00/04)', course: 'Science & Math', completed: true },
-    { id: 'w8s', title: 'Week 8 Science | Regular Assessment 1 (00/03)', course: 'Science & Math', completed: true },
-    { id: 'w8m', title: 'Week 8 Maths | Regular Assessment 1 (00/03)', course: 'Science & Math', completed: true },
-    { id: 'w7s', title: 'Week 7 Science | Regular Assessment 1 Review (00/05)', course: 'Science & Math', completed: true },
-    { id: 'w7m', title: 'Week 7 Maths | Regular Assessment 1 Review (06/06)', course: 'Science & Math', completed: true },
-    { id: 'w6s', title: 'Week 6 Science | Plants 1 - Germination and Growth (00/06)', course: 'Science & Math', completed: true },
-    { id: 'w6m', title: 'Week 6 Maths | Percentage Changes (04/04)', course: 'Science & Math', completed: true },
-    { id: 'w5s', title: 'Week 5 Science | Introduction to Respiration (00/07)', course: 'Science & Math', completed: true },
-    { id: 'w5m', title: 'Week 5 Maths | Ratios and Proportions (06/06)', course: 'Science & Math', completed: true },
-    { id: 'w4s', title: 'Week 4 Science | Atoms and Elements 2 (00/07)', course: 'Science & Math', completed: true },
-    { id: 'w4m', title: 'Week 4 Maths | Fractions 2 (00/04)', course: 'Science & Math', completed: true },
-    { id: 'w3s', title: 'Week 3 Science | Atoms and Elements 1 (00/06)', course: 'Science & Math', completed: true },
-    { id: 'w3m', title: 'Week 3 Maths | Fractions 1 (00/04)', course: 'Science & Math', completed: true },
-    { id: 'w2s', title: 'Week 2 Science | Scientific Method and Fair Test (00/04)', course: 'Science & Math', completed: true },
-    { id: 'w2m', title: 'Week 2 Maths | Multiples, Factors, Primes (00/03)', course: 'Science & Math', completed: true },
-    { id: 'w1s', title: 'Week 1 Science | Introduction to Science (00/05)', course: 'Science & Math', completed: true },
-    { id: 'w1m', title: 'Week 1 Maths | Integers (04/04)', course: 'Science & Math', completed: true },
-    { id: 'studyplans', title: 'Study Plans & Glossaries (00/08)', course: 'Science & Math', completed: true },
-    { id: 'g6stem', title: 'Grade 6 STEM Project Recap (00/06)', course: 'Science & Math', completed: true },
+    { id: 'w30m', title: 'Week 30 Maths - End Term 2 Review Week ⭐ Currently Learning', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w28s', title: 'Week 28 Science | End Term Review (Term 2) (00/03)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w28m', title: 'Week 28 Maths - End Term 2 Review (01/03)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w27s', title: 'Week 27 Science | Ecology 1 - Interaction of Organisms (00/06)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w27m', title: 'Week 27 Maths - Transformations 1 (00/04)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w26s', title: 'Week 26 Science | Magnetism (00/06)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w26m', title: 'Week 26 Maths - Probability 2 (00/04)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w25s', title: 'Week 25 Science | Electricity 2 - Voltage and Resistance (00/07)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w25m', title: 'Week 25 Maths - Probability 1 (01/05)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w24s', title: 'Week 24 Science | Regular Assessment (Term 2) (00/06)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w24m', title: 'Week 24 Maths - Regular Assessment 2 Exam (00/03)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w23s', title: 'Week 23 Science | Regular Assessment (Term 2) Review (00/03)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w23m', title: 'Week 23 Maths - Review Week (00/03)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w22bs', title: 'Week 22B Science | Electricity 1 - Series and Parallel Circuits (01/05)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w22bm', title: 'Week 22B Maths - Symmetry (00/04)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w22s', title: 'Week 22 Science | Light 3 - Colours (00/07)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w22m', title: 'Week 22 Maths - Geometry 5 - Area and Perimeter (00/05)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w21s', title: 'Week 21 Science | Light 2 - Refraction (01/08)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w21m', title: 'Week 21 Maths - Geometry 4 - Circles 2 (00/04)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w20s', title: 'Week 20 Science | Light 1 - Reflection (00/07)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w20m', title: 'Week 20 Maths - Geometry 3 - Circles 1 (00/04)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w19s', title: 'Week 19 Science | Sound 2 (05/08)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w19m', title: 'Week 19 Maths - Geometry 2 - 3D Shapes and Nets (00/03)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w18s', title: 'Week 18 Science | Sound 1 (00/06)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w18m', title: 'Week 18 Maths - Gemoetry 1 - Angles (00/03)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w17s', title: 'Week 17 Science | Forces 2 - Newton\'s Laws of Motion (00/06)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w17m', title: 'Week 17 Maths (00/05)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w16s', title: 'Week 16 Science | Forces 1 - Speed and Resistance (00/08)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w16m', title: 'Week 16 Maths (00/04)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w15s', title: 'Week 15 Science | Introduction to Reproduction (00/06)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w15m', title: 'Week 15 Maths | Algebraic Expressions 2 (00/03)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w14s', title: 'Week 14 Science | End Term 1 (00/02)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w14m', title: 'Week 14 Maths | End Term 1 (02/03)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w13s', title: 'Week 13 Science | End Term 1 Review (03/03)', course: 'Science & Math', category: 'Science', completed: true },
+    { id: 'w13m', title: 'Week 13 Maths | End Term 1 Review (02/03)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w12s', title: 'Week 12 Science | STEM Group Project (00/04)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w12m', title: 'Week 12 Maths | Algebraic Expressions 1 (01/04)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w11s', title: 'Week 11 Science | Neutralization (00/06)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w11m', title: 'Week 11 Maths | Algebraic Sequences (00/04)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w10s', title: 'Week 10 Science | Acids and Alkalis (00/07)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w10m', title: 'Week 10 Maths | Powers and Roots (00/05)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w9s', title: 'Week 9 Science | Plants 2 - Transpiration and Transport of Nutrients (00/04)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w9m', title: 'Week 9 Maths | Units and Conversions (00/04)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w8s', title: 'Week 8 Science | Regular Assessment 1 (00/03)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w8m', title: 'Week 8 Maths | Regular Assessment 1 (00/03)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w7s', title: 'Week 7 Science | Regular Assessment 1 Review (00/05)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w7m', title: 'Week 7 Maths | Regular Assessment 1 Review (06/06)', course: 'Science & Math', category: 'Math', completed: true },
+    { id: 'w6s', title: 'Week 6 Science | Plants 1 - Germination and Growth (00/06)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w6m', title: 'Week 6 Maths | Percentage Changes (04/04)', course: 'Science & Math', category: 'Math', completed: true },
+    { id: 'w5s', title: 'Week 5 Science | Introduction to Respiration (00/07)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w5m', title: 'Week 5 Maths | Ratios and Proportions (06/06)', course: 'Science & Math', category: 'Math', completed: true },
+    { id: 'w4s', title: 'Week 4 Science | Atoms and Elements 2 (00/07)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w4m', title: 'Week 4 Maths | Fractions 2 (00/04)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w3s', title: 'Week 3 Science | Atoms and Elements 1 (00/06)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w3m', title: 'Week 3 Maths | Fractions 1 (00/04)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w2s', title: 'Week 2 Science | Scientific Method and Fair Test (00/04)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w2m', title: 'Week 2 Maths | Multiples, Factors, Primes (00/03)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w1s', title: 'Week 1 Science | Introduction to Science (00/05)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w1m', title: 'Week 1 Maths | Integers (04/04)', course: 'Science & Math', category: 'Math', completed: true },
+    { id: 'studyplans', title: 'Study Plans & Glossaries (00/08)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'g6stem', title: 'Grade 6 STEM Project Recap (00/12)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'e1', title: 'English Week 1 - Grammar Basics', course: 'English', category: 'English', completed: false },
+    { id: 'e2', title: 'English Week 2 - Vocabulary Building', course: 'English', category: 'English', completed: false },
+    { id: 'e3', title: 'English Week 3 - Reading Comprehension', course: 'English', category: 'English', completed: false },
   ]);
 
   const [chatOpen, setChatOpen] = useState(false);
+  const [voiceOpen, setVoiceOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([
     { role: 'assistant', content: 'Hello! I am your EMG assistant. How can I help you today?' }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isSpeakingChat, setIsSpeakingChat] = useState<number | null>(null);
   const [tasksExpanded, setTasksExpanded] = useState(false);
+  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
+  const [isGeneratingContent, setIsGeneratingContent] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<'Math' | 'Science' | 'English'>('Math');
   const [claps, setClaps] = useState<{ 
     id: number; 
     x: number; 
@@ -109,6 +130,8 @@ export default function App() {
     scale: number;
     rotation: number;
   }[]>([]);
+  const [showReminder, setShowReminder] = useState(false);
+  const [reminderMessage, setReminderMessage] = useState('');
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   // STEM Project target (7 weeks from last Thursday, March 5, 2026)
@@ -116,10 +139,77 @@ export default function App() {
   const daysToStem = Math.max(0, differenceInDays(stemTargetDate, new Date()));
 
   useEffect(() => {
+    const messages = [
+      "It's time to review your lessons! Let's get started now!",
+      "Don't forget to do your homework! The exams are coming soon!",
+      "Take 15 minutes to review today's lessons right now!",
+      "Hard work pays off! Start your study session now!",
+      "Try a quick quiz to test your knowledge right away!"
+    ];
+    
+    const timer = setTimeout(() => {
+      setReminderMessage(messages[Math.floor(Math.random() * messages.length)]);
+      setShowReminder(true);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
     if (chatEndRef.current) {
       chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
+
+  const currentContext = `
+    Schedule: ${WEEKLY_SCHEDULE.map(s => `${s.day}: ${s.subject}`).join(', ')}
+    Science STEM Project: ${daysToStem} days left.
+    Incomplete tasks: ${tasks.filter(t => !t.completed).map(t => t.title).join(', ')}
+  `;
+
+  const handleExpandTask = async (taskId: string) => {
+    if (expandedTaskId === taskId) {
+      setExpandedTaskId(null);
+      return;
+    }
+
+    setExpandedTaskId(taskId);
+    const task = tasks.find(t => t.id === taskId);
+    
+    if (task && !task.content) {
+      setIsGeneratingContent(true);
+      try {
+        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const response = await ai.models.generateContent({
+          model: 'gemini-3-flash-preview',
+          contents: `Generate a summary and a 5-question multiple choice quiz for the lesson: "${task.title}". 
+          The summary should be concise (2-3 paragraphs).
+          The quiz should have 5 questions, each with 4 options and 1 correct answer (index 0-3).
+          Return the response in JSON format matching this schema:
+          {
+            "summary": "string",
+            "quiz": [
+              {
+                "question": "string",
+                "options": ["string", "string", "string", "string"],
+                "answer": 0
+              }
+            ]
+          }`,
+          config: {
+            responseMimeType: 'application/json',
+          }
+        });
+
+        const content = JSON.parse(response.text);
+        setTasks(prev => prev.map(t => t.id === taskId ? { ...t, content } : t));
+      } catch (error) {
+        console.error('Error generating task content:', error);
+      } finally {
+        setIsGeneratingContent(false);
+      }
+    }
+  };
 
   const handleSendMessage = async () => {
     if (!input.trim() || isLoading) return;
@@ -129,17 +219,11 @@ export default function App() {
     setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
     setIsLoading(true);
 
-    const context = `
-      Schedule: ${WEEKLY_SCHEDULE.map(s => `${s.day}: ${s.subject}`).join(', ')}
-      Science STEM Project: ${daysToStem} days left.
-      Incomplete tasks: ${tasks.filter(t => !t.completed).map(t => t.title).join(', ')}
-    `;
-
     // Add placeholder for assistant message
     setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
 
     try {
-      const stream = getAssistantResponseStream(userMsg, context);
+      const stream = getAssistantResponseStream(userMsg, currentContext);
       let fullContent = '';
       
       for await (const chunk of stream) {
@@ -150,10 +234,65 @@ export default function App() {
           return newMessages;
         });
       }
+
+      // Automatically speak the response if it's short enough or user preference (here we just provide the button)
     } catch (error) {
       console.error("Chat Error:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const speakMessage = async (text: string, index: number) => {
+    if (isSpeakingChat !== null) return;
+    
+    setIsSpeakingChat(index);
+    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+    const audioCtx = new AudioContextClass({ sampleRate: 24000 });
+    let nextStartTime = 0;
+
+    try {
+      const stream = generateSpeechStream(text);
+      let hasStarted = false;
+
+      for await (const pcmData of stream) {
+        const float32Data = new Float32Array(pcmData.length);
+        for (let i = 0; i < pcmData.length; i++) {
+          float32Data[i] = pcmData[i] / 32768.0;
+        }
+
+        const buffer = audioCtx.createBuffer(1, float32Data.length, 24000);
+        buffer.getChannelData(0).set(float32Data);
+
+        const source = audioCtx.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioCtx.destination);
+        
+        const startTime = Math.max(audioCtx.currentTime, nextStartTime);
+        source.start(startTime);
+        nextStartTime = startTime + buffer.duration;
+        hasStarted = true;
+
+        source.onended = () => {
+          // We don't close here because more chunks might come
+        };
+      }
+
+      // Wait for the last chunk to finish
+      const waitTime = (nextStartTime - audioCtx.currentTime) * 1000;
+      setTimeout(() => {
+        setIsSpeakingChat(null);
+        audioCtx.close();
+      }, Math.max(0, waitTime + 100));
+
+      if (!hasStarted) {
+        setIsSpeakingChat(null);
+        audioCtx.close();
+      }
+    } catch (error) {
+      console.error("TTS Streaming Playback Error:", error);
+      setIsSpeakingChat(null);
+      audioCtx.close();
     }
   };
 
@@ -368,15 +507,13 @@ export default function App() {
 
           {/* Pending Tasks */}
           <section className="bg-white/5 backdrop-blur-sm rounded-[2.5rem] shadow-2xl border border-white/10 overflow-hidden">
-            <div className="px-10 py-8 border-b border-white/10 flex items-center justify-between bg-white/[0.02]">
-              <div>
-                <h2 className="text-2xl font-bold text-white">Tasks to complete</h2>
-                <p className="text-sm text-white/40 mt-1">You have <span className="text-[#00A3FF] font-bold">{incompleteTasks.length}</span> incomplete tasks</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="hidden sm:flex items-center gap-2 text-[10px] font-bold text-[#00A3FF] bg-[#00A3FF]/10 px-4 py-2 rounded-full uppercase tracking-widest border border-[#00A3FF]/20">
-                  <AlertCircle size={14} />
-                  Updated daily
+            <div className="flex flex-col space-y-6 px-10 py-8 border-b border-white/10 bg-white/[0.02]">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-white tracking-tight">Learning Tasks</h2>
+                  <p className="text-sm text-white/40 mt-1">
+                    You have <span className="text-[#00A3FF] font-bold">{tasks.filter(t => !t.completed && t.category === activeCategory).length}</span> incomplete {activeCategory} tasks
+                  </p>
                 </div>
                 <button 
                   onClick={() => setTasksExpanded(!tasksExpanded)}
@@ -385,55 +522,130 @@ export default function App() {
                   <ChevronRight size={24} className={cn("transition-transform duration-300", tasksExpanded ? "-rotate-90" : "rotate-90")} />
                 </button>
               </div>
+
+              <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                {(['Math', 'Science', 'English'] as const).map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setActiveCategory(category)}
+                    className={cn(
+                      "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all whitespace-nowrap border",
+                      activeCategory === category
+                        ? "bg-[#00A3FF] text-white border-[#00A3FF] shadow-lg shadow-[#00A3FF]/20"
+                        : "bg-white/5 text-white/40 border-white/10 hover:border-white/20 hover:bg-white/10"
+                    )}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
             </div>
             
             <div className="divide-y divide-white/5">
-              {tasks.length > 0 ? (
-                (tasksExpanded ? tasks : tasks.slice(0, 7)).map(task => (
-                  <div 
-                    key={task.id} 
-                    className={cn(
-                      "group px-10 py-6 flex items-center gap-6 hover:bg-white/[0.03] transition-all cursor-pointer",
-                      task.completed && "opacity-30"
-                    )}
-                    onClick={() => toggleTask(task.id)}
-                  >
-                    <button className={cn(
-                      "w-7 h-7 rounded-xl flex items-center justify-center transition-all shadow-lg",
-                      task.completed ? "bg-[#00A3FF] text-white" : "bg-white/5 border border-white/10 text-transparent group-hover:border-[#00A3FF] group-hover:bg-white/10"
-                    )}>
-                      {task.completed ? <CheckCircle2 size={18} /> : <Circle size={18} />}
-                    </button>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <h4 className={cn("font-bold text-lg transition-all", task.completed ? "text-white/40" : "text-white group-hover:text-[#00A3FF]")}>
-                          {task.title}
-                        </h4>
-                        {task.completed && (
-                          <motion.div
-                            initial={{ scale: 0, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            className="text-[#00A3FF]"
-                          >
-                            <Check size={20} className="stroke-[3px]" />
-                          </motion.div>
+              {tasks.filter(t => t.category === activeCategory).length > 0 ? (
+                (tasksExpanded ? tasks.filter(t => t.category === activeCategory) : tasks.filter(t => t.category === activeCategory).slice(0, 7)).map(task => (
+                  <div key={task.id} className="group">
+                    <div 
+                      className={cn(
+                        "px-10 py-6 flex items-center gap-6 hover:bg-white/[0.03] transition-all cursor-pointer",
+                        task.completed && "opacity-30",
+                        expandedTaskId === task.id && "bg-white/[0.05]"
+                      )}
+                      onClick={() => handleExpandTask(task.id)}
+                    >
+                      <button 
+                        className={cn(
+                          "w-7 h-7 rounded-xl flex items-center justify-center transition-all shadow-lg",
+                          task.completed ? "bg-[#00A3FF] text-white" : "bg-white/5 border border-white/10 text-transparent group-hover:border-[#00A3FF] group-hover:bg-white/10"
                         )}
-                      </div>
-                      <div className="flex items-center gap-4 mt-2">
-                        <span className={cn(
-                          "text-[9px] font-bold uppercase tracking-[0.15em] px-2.5 py-1 rounded-md border",
-                          task.course === 'Science & Math' ? "bg-blue-500/10 text-blue-400 border-blue-500/20" : "bg-purple-500/10 text-purple-400 border-purple-500/20"
-                        )}>
-                          {task.course}
-                        </span>
-                        {task.dueDate && (
-                          <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest flex items-center gap-1.5">
-                            <Clock size={12} className="text-[#00A3FF]" /> Due: {format(parseISO(task.dueDate), 'd/M')}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleTask(task.id);
+                        }}
+                      >
+                        {task.completed ? <CheckCircle2 size={18} /> : <Circle size={18} />}
+                      </button>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3">
+                          <h4 className={cn("font-bold text-lg transition-all", task.completed ? "text-white/40" : "text-white group-hover:text-[#00A3FF]")}>
+                            {task.title}
+                          </h4>
+                          {task.completed && (
+                            <motion.div
+                              initial={{ scale: 0, opacity: 0 }}
+                              animate={{ scale: 1, opacity: 1 }}
+                              className="text-[#00A3FF]"
+                            >
+                              <Check size={20} className="stroke-[3px]" />
+                            </motion.div>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-4 mt-2">
+                          <span className={cn(
+                            "text-[9px] font-bold uppercase tracking-[0.15em] px-2.5 py-1 rounded-md border",
+                            task.course === 'Science & Math' ? "bg-blue-500/10 text-blue-400 border-blue-500/20" : "bg-purple-500/10 text-purple-400 border-purple-500/20"
+                          )}>
+                            {task.course}
                           </span>
-                        )}
+                        </div>
                       </div>
+                      <ChevronRight size={20} className={cn(
+                        "text-white/20 transition-all",
+                        expandedTaskId === task.id ? "rotate-90 text-[#00A3FF]" : "group-hover:text-[#00A3FF]"
+                      )} />
                     </div>
-                    <ChevronRight size={20} className="text-white/20 group-hover:text-[#00A3FF] transition-all" />
+
+                    {/* Expanded Content */}
+                    <AnimatePresence>
+                      {expandedTaskId === task.id && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="overflow-hidden bg-black/20"
+                        >
+                          <div className="px-10 py-8 space-y-8 border-t border-white/5">
+                            {isGeneratingContent ? (
+                              <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                                <Loader2 className="w-8 h-8 text-[#00A3FF] animate-spin" />
+                                <p className="text-xs font-bold text-white/40 uppercase tracking-[0.2em]">Generating lesson content...</p>
+                              </div>
+                            ) : task.content ? (
+                              <div className="space-y-10">
+                                {/* Summary Section */}
+                                <section className="space-y-4">
+                                  <div className="flex items-center gap-3 text-[#00A3FF]">
+                                    <BookOpen size={18} />
+                                    <h5 className="text-[10px] font-black uppercase tracking-[0.25em]">Lesson Summary</h5>
+                                  </div>
+                                  <div className="text-white/70 text-sm leading-relaxed bg-white/5 p-6 rounded-2xl border border-white/10 shadow-inner">
+                                    {task.content.summary}
+                                  </div>
+                                </section>
+
+                                {/* Quiz Section */}
+                                <section className="space-y-4">
+                                  <div className="flex items-center gap-3 text-[#00A3FF]">
+                                    <HelpCircle size={18} />
+                                    <h5 className="text-[10px] font-black uppercase tracking-[0.25em]">Practice Quiz</h5>
+                                  </div>
+                                  <div className="bg-white/5 p-8 rounded-3xl border border-white/10 shadow-2xl">
+                                    <Quiz 
+                                      questions={task.content.quiz} 
+                                      onComplete={(score) => {
+                                        if (score === task.content?.quiz.length && !task.completed) {
+                                          toggleTask(task.id);
+                                        }
+                                      }}
+                                    />
+                                  </div>
+                                </section>
+                              </div>
+                            ) : null}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 ))
               ) : (
@@ -441,8 +653,8 @@ export default function App() {
                   <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-6 text-[#00A3FF] shadow-inner">
                     <CheckCircle2 size={40} />
                   </div>
-                  <h3 className="text-2xl font-bold text-white">Excellent!</h3>
-                  <p className="text-white/40 mt-2">You have completed all tasks for this term.</p>
+                  <h3 className="text-2xl font-bold text-white">No Tasks</h3>
+                  <p className="text-white/40 mt-2">There are no tasks in this category.</p>
                 </div>
               )}
             </div>
@@ -592,6 +804,14 @@ export default function App() {
         </AnimatePresence>
 
         <button 
+          onClick={() => setVoiceOpen(true)}
+          className="w-16 h-16 bg-gradient-to-br from-[#00A3FF] to-[#0056B3] text-white rounded-2xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all group relative overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <Mic size={28} className="group-hover:scale-110 transition-transform" />
+        </button>
+
+        <button 
           onClick={() => setChatOpen(true)}
           className="w-16 h-16 bg-[#0056B3] text-white rounded-2xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all group relative overflow-hidden"
         >
@@ -709,7 +929,33 @@ export default function App() {
                               <div className="w-1.5 h-1.5 bg-[#0056B3] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                             </div>
                           ) : (
-                            <Markdown>{msg.content}</Markdown>
+                            <>
+                              <Markdown>{msg.content}</Markdown>
+                              {msg.role === 'assistant' && msg.content !== '' && (
+                                <button 
+                                  onClick={() => speakMessage(msg.content, idx)}
+                                  disabled={isSpeakingChat !== null}
+                                  className={cn(
+                                    "mt-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg border transition-all",
+                                    isSpeakingChat === idx 
+                                      ? "bg-[#0056B3] text-white border-[#0056B3]" 
+                                      : "bg-white text-[#0056B3] border-[#0056B3]/20 hover:bg-[#0056B3]/5"
+                                  )}
+                                >
+                                  {isSpeakingChat === idx ? (
+                                    <>
+                                      <Loader2 size={12} className="animate-spin" />
+                                      Speaking...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Volume2 size={12} />
+                                      Read Aloud
+                                    </>
+                                  )}
+                                </button>
+                              )}
+                            </>
                           )}
                         </div>
                       </div>
@@ -754,6 +1000,54 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Reminder Notification */}
+      <AnimatePresence>
+        {showReminder && (
+          <motion.div
+            initial={{ opacity: 0, x: 100, scale: 0.8 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: 100, scale: 0.8 }}
+            className="fixed bottom-24 right-8 z-[100] max-w-xs"
+          >
+            <div className="bg-[#00A3FF] text-white p-5 rounded-3xl shadow-2xl border border-white/20 relative group overflow-hidden">
+              {/* Background Glow */}
+              <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/20 blur-3xl rounded-full group-hover:bg-white/30 transition-all"></div>
+              
+              <div className="flex gap-4 relative z-10">
+                <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center shadow-inner">
+                  <Bot size={28} className="text-white animate-bounce" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex justify-between items-start mb-1">
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">EMG Assistant</span>
+                    <button 
+                      onClick={() => setShowReminder(false)}
+                      className="text-white/40 hover:text-white transition-colors"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                  <p className="text-sm font-bold leading-snug">
+                    {reminderMessage}
+                  </p>
+                </div>
+              </div>
+              
+              {/* Progress Bar (Auto-hide after 10s) */}
+              <motion.div 
+                initial={{ width: '100%' }}
+                animate={{ width: '0%' }}
+                transition={{ duration: 10, ease: 'linear' }}
+                onAnimationComplete={() => setShowReminder(false)}
+                className="absolute bottom-0 left-0 h-1 bg-white/30"
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <VoiceAssistant isOpen={voiceOpen} onClose={() => setVoiceOpen(false)} context={currentContext} />
     </div>
   );
 }

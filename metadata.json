@@ -1,5 +1,5 @@
 {
   "name": "EMG LMS Assistant",
   "description": "Study reminder assistant for LMS EMG, managing schedules and STEM projects.",
-  "requestFramePermissions": []
+  "requestFramePermissions": ["microphone"]
 }
