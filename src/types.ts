@@ -24,7 +24,7 @@ export interface ScheduleItem {
 export const WEEKLY_SCHEDULE: ScheduleItem[] = [
   { day: 'Mon', subject: 'Maths', icon: 'Calculator' },
   { day: 'Tue', subject: 'English', icon: 'Languages' },
-  { day: 'Wed', subject: 'Off', icon: 'Coffee' },
+  { day: 'Wed', subject: 'Science', icon: 'Beaker' },
   { day: 'Thu', subject: 'Science', icon: 'Beaker' },
   { day: 'Fri', subject: 'Off', icon: 'Coffee' },
   { day: 'Sat', subject: 'Off', icon: 'Coffee' },

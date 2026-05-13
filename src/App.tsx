@@ -43,8 +43,19 @@ function cn(...inputs: ClassValue[]) {
 
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>([
-    { id: 'w30m', title: 'Week 30 Maths - End Term 2 Review Week ⭐ Currently Learning', course: 'Science & Math', category: 'Math', completed: false },
-    { id: 'w28s', title: 'Week 28 Science | End Term Review (Term 2) (00/03)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w34s', title: 'Week 34 Science | STEM Science Fair (00/06)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w34m', title: 'Week 34 Maths - STEM (00/04)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w33s', title: 'Week 33 Science | STEM - Parallel Circuits (00/02)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w33m', title: 'Week 33 Maths - STEM (00/06)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w32s', title: 'Week 32 Science | Chemical Reactions 2 (00/05)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w32m', title: 'Week 32 Maths - STEM (00/03)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w31s', title: 'Week 31 Science | Chemical Reactions 1 (00/07)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w31m', title: 'Week 31 Maths - STEM (00/04)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w30s', title: 'Week 30 Science | Ecology 2 - Environment (00/05)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w30m', title: 'Week 30 Maths - End Term 2 (00/03)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w29s', title: 'Week 29 Science | End-Term 2 (00/03)', course: 'Science & Math', category: 'Science', completed: false },
+    { id: 'w29m', title: 'Week 29 Maths - End Term 2 Review Week (00/03)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w28s', title: 'Week 28 Science | End Term Review (Term 2) (01/03)', course: 'Science & Math', category: 'Science', completed: false },
     { id: 'w28m', title: 'Week 28 Maths - End Term 2 Review (01/03)', course: 'Science & Math', category: 'Math', completed: false },
     { id: 'w27s', title: 'Week 27 Science | Ecology 1 - Interaction of Organisms (00/06)', course: 'Science & Math', category: 'Science', completed: false },
     { id: 'w27m', title: 'Week 27 Maths - Transformations 1 (00/04)', course: 'Science & Math', category: 'Math', completed: false },
@@ -65,7 +76,7 @@ export default function App() {
     { id: 'w20s', title: 'Week 20 Science | Light 1 - Reflection (00/07)', course: 'Science & Math', category: 'Science', completed: false },
     { id: 'w20m', title: 'Week 20 Maths - Geometry 3 - Circles 1 (00/04)', course: 'Science & Math', category: 'Math', completed: false },
     { id: 'w19s', title: 'Week 19 Science | Sound 2 (05/08)', course: 'Science & Math', category: 'Science', completed: false },
-    { id: 'w19m', title: 'Week 19 Maths - Geometry 2 - 3D Shapes and Nets (00/03)', course: 'Science & Math', category: 'Math', completed: false },
+    { id: 'w19m', title: 'Week 19 Maths - Geometry 2 - 3D Shapes and Nets (01/03)', course: 'Science & Math', category: 'Math', completed: false },
     { id: 'w18s', title: 'Week 18 Science | Sound 1 (00/06)', course: 'Science & Math', category: 'Science', completed: false },
     { id: 'w18m', title: 'Week 18 Maths - Gemoetry 1 - Angles (00/03)', course: 'Science & Math', category: 'Math', completed: false },
     { id: 'w17s', title: 'Week 17 Science | Forces 2 - Newton\'s Laws of Motion (00/06)', course: 'Science & Math', category: 'Science', completed: false },
@@ -445,7 +456,6 @@ export default function App() {
                     item.subject === 'Maths' && "text-blue-400 bg-blue-400",
                     item.subject === 'English' && "text-purple-400 bg-purple-400",
                     item.subject === 'Science' && "text-emerald-400 bg-emerald-400",
-                  item.subject === 'Science' && "text-emerald-400 bg-emerald-400",
                     item.subject === 'Off' && "text-white/20 bg-white/20"
                   )}></div>
                 </div>
