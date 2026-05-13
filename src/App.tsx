@@ -445,6 +445,7 @@ export default function App() {
                     item.subject === 'Maths' && "text-blue-400 bg-blue-400",
                     item.subject === 'English' && "text-purple-400 bg-purple-400",
                     item.subject === 'Science' && "text-emerald-400 bg-emerald-400",
+                  item.subject === 'Science' && "text-emerald-400 bg-emerald-400",
                     item.subject === 'Off' && "text-white/20 bg-white/20"
                   )}></div>
                 </div>
